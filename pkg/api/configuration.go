@@ -13,9 +13,9 @@ type Configuration struct {
 	// Override default VMSpec used for validating storage
 	VMConfig VMSpec `json:"vmConfig,omitempty"`
 	// SkipCleanup of resources created during validation
-	SkipCleanup bool `json:"skipCleanup,omitempty"`
+	SkipCleanup *bool `json:"skipCleanup,omitempty"`
 	// Timeout represents time duration in seconds to wait before triggering cleanup
-	Timeout int `json:"timeout,omitempty"`
+	Timeout *int `json:"timeout,omitempty"`
 }
 
 type VMSpec struct {
