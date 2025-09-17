@@ -13,9 +13,10 @@ import (
 
 	harvesterhciv1beta1 "github.com/harvester/harvester/pkg/generated/clientset/versioned"
 	"github.com/rancher/wrangler/v3/pkg/signals"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 )
 
@@ -24,14 +25,15 @@ type ValidationRun struct {
 	ctx            context.Context
 	Configuration  *api.Configuration
 	Result         *api.Result
-	createdObjects []runtime.Object
+	createdObjects []client.Object
 	cfg            *rest.Config
 	clients        HarvesterClient
 }
 
 type HarvesterClient struct {
-	coreClient *kubernetes.Clientset
-	hvClient   *harvesterhciv1beta1.Clientset
+	coreClient    *kubernetes.Clientset
+	hvClient      *harvesterhciv1beta1.Clientset
+	runtimeClient client.Client
 }
 
 func (v *ValidationRun) Execute() error {
@@ -82,6 +84,21 @@ func (v *ValidationRun) readConfig() error {
 func (v *ValidationRun) preFlightChecks() error {
 	if v.Configuration.ImageURL == "" {
 		return errors.New("no imageURL specified, aborting run")
+	}
+
+	nodeList, err := v.clients.coreClient.CoreV1().Nodes().List(v.ctx, metav1.ListOptions{})
+	if err != nil {
+		return fmt.Errorf("error listing nodes during pre-flight checks: %w", err)
+	}
+	count := 0
+	for _, node := range nodeList.Items {
+		if node.DeletionTimestamp == nil && isNodeReady(node) {
+			count++
+		}
+	}
+
+	if count < 2 {
+		return errors.New("cluster does not have atleast 2 nodes, aborting run")
 	}
 	return nil
 }
@@ -141,14 +158,30 @@ func (v *ValidationRun) setupClients() error {
 
 	harvesterClient, err := harvesterhciv1beta1.NewForConfig(cfg)
 	if err != nil {
-		return fmt.Errorf("error generating harvester client interfce: %w", err)
+		return fmt.Errorf("error generating harvester client interface: %w", err)
 	}
 
-	clients := HarvesterClient{
-		coreClient: coreClient,
-		hvClient:   harvesterClient,
+	runtimeClient, err := client.New(cfg, client.Options{})
+	if err != nil {
+		return fmt.Errorf("error generating dynamic client interface: %w", err)
 	}
+	clients := HarvesterClient{
+		coreClient:    coreClient,
+		hvClient:      harvesterClient,
+		runtimeClient: runtimeClient,
+	}
+
 	v.cfg = cfg
 	v.clients = clients
 	return nil
+}
+
+// isNodeReady will check from conditions if Ready condition is True
+func isNodeReady(node corev1.Node) bool {
+	for _, cond := range node.Status.Conditions {
+		if cond.Type == corev1.NodeReady && cond.Status == corev1.ConditionTrue {
+			return true
+		}
+	}
+	return false
 }
