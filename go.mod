@@ -9,6 +9,7 @@ require (
 	k8s.io/api v0.33.1
 	k8s.io/apimachinery v0.34.1
 	k8s.io/client-go v12.0.0+incompatible
+	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/controller-runtime v0.19.7
 	sigs.k8s.io/yaml v1.6.0
 )
@@ -52,7 +53,6 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/openshift/custom-resource-status v1.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.78.2 // indirect
 	github.com/prometheus/client_golang v1.22.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
@@ -71,7 +71,6 @@ require (
 	github.com/spf13/cast v1.8.0 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.opentelemetry.io/otel v1.36.0 // indirect
 	go.opentelemetry.io/otel/trace v1.36.0 // indirect
@@ -97,7 +96,6 @@ require (
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.31.9 // indirect
 	k8s.io/kubernetes v1.32.2 // indirect
-	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397 // indirect
 	kubevirt.io/api v1.5.0 // indirect
 	kubevirt.io/containerized-data-importer-api v1.61.0 // indirect
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
@@ -108,6 +106,8 @@ require (
 )
 
 replace (
+	github.com/openshift/api => github.com/openshift/api v0.0.0-20191219222812-2987a591a72c
+	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20200521150516-05eb9880269c
 	github.com/rancher/lasso => github.com/rancher/lasso v0.0.0-20241202185148-04649f379358
 	github.com/rancher/rancher => github.com/rancher/rancher v0.0.0-20240919204204-3da2ae0cabd1
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20240919204204-3da2ae0cabd1
@@ -125,9 +125,11 @@ replace (
 	k8s.io/component-helpers => k8s.io/component-helpers v0.32.5
 	k8s.io/controller-manager => k8s.io/controller-manager v0.32.5
 	k8s.io/cri-api => k8s.io/cri-api v0.32.5
+	k8s.io/cri-client => k8s.io/cri-client v0.32.5
 	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.32.5
 	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.32.5
 	k8s.io/endpointslice => k8s.io/endpointslice v0.32.5
+	k8s.io/externaljwt => k8s.io/externaljwt@ v0.32.5
 	k8s.io/gengo => k8s.io/gengo v0.0.0-20240826214909-a7b603a56eb7
 	k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 	k8s.io/kms => k8s.io/kms v0.32.5
@@ -144,8 +146,4 @@ replace (
 	k8s.io/mount-utils => k8s.io/mount-utils v0.32.5
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.32.5
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.32.5
-	github.com/openshift/api => github.com/openshift/api v0.0.0-20191219222812-2987a591a72c
-    github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20200521150516-05eb9880269c
-    k8s.io/cri-client => k8s.io/cri-client v0.32.5
-    k8s.io/externaljwt => k8s.io/externaljwt@ v0.32.5
 )

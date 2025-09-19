@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
+	v1 "k8s.io/api/storage/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
@@ -137,7 +138,8 @@ func (v *ValidationRun) applyValidatinoDefaults() error {
 	// verify and apply default storageClass if one is not present
 	if v.Configuration.StorageClass == "" {
 		logrus.Warnf("no default storage class specified, looking up default storageclass")
-		scList, err := v.clients.hvClient.StorageV1().StorageClasses().List(v.ctx, metav1.ListOptions{})
+		scList := &v1.StorageClassList{}
+		err := v.clients.runtimeClient.List(v.ctx, scList, &client.ListOptions{})
 		if err != nil {
 			return fmt.Errorf("error listing storageclasses: %w", err)
 		}
