@@ -4,8 +4,9 @@ import (
 	"flag"
 	"os"
 
-	"github.com/harvester/storage-validator/pkg/validation"
 	"github.com/sirupsen/logrus"
+
+	"github.com/harvester/storage-validator/pkg/validation"
 )
 
 var (

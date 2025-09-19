@@ -7,4 +7,5 @@ const (
 	DefaultDiskSize     = "10Gi"
 	DefaultTimeout      = 300 //will be calculated as duration in seconds
 	defaultSCAnnotation = "storageclass.kubernetes.io/is-default-class"
+	DefaultPVCSize      = "1Gi"
 )

@@ -2,7 +2,11 @@ package validation
 
 import (
 	"github.com/sirupsen/logrus"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/utils/ptr"
 )
 
 // Current validation requirements are
@@ -34,4 +38,23 @@ func (v *ValidationRun) cleanupResources() error {
 		}
 	}
 	return nil
+}
+
+func (v *ValidationRun) createVolume() error {
+	pvc := &corev1.PersistentVolumeClaim{
+		ObjectMeta: metav1.ObjectMeta{
+			GenerateName: "pvc-storage-validation",
+			Namespace:    v.Configuration.Namespace,
+		},
+		Spec: corev1.PersistentVolumeClaimSpec{
+			StorageClassName: ptr.To(v.Configuration.StorageClass),
+			Resources: corev1.VolumeResourceRequirements{
+				Requests: map[corev1.ResourceName]resource.Quantity{
+					corev1.ResourceStorage: resource.MustParse(DefaultPVCSize),
+				},
+			},
+		},
+	}
+
+	// need to create pvc
 }

@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/harvester/storage-validator/pkg/api"
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+
+	"github.com/harvester/storage-validator/pkg/api"
 
 	harvesterhciv1beta1 "github.com/harvester/harvester/pkg/generated/clientset/versioned"
 	"github.com/rancher/wrangler/v3/pkg/signals"
@@ -123,6 +124,14 @@ func (v *ValidationRun) applyValidatinoDefaults() error {
 
 	if v.Configuration.SkipCleanup == nil {
 		v.Configuration.SkipCleanup = &[]bool{true}[0]
+	}
+
+	if v.Configuration.Namespace == "" {
+		v.Configuration.Namespace = DefaultNamespace
+	}
+
+	if v.Configuration.VMConfig.DiskSize == "" {
+		v.Configuration.VMConfig.DiskSize = DefaultDiskSize
 	}
 
 	// verify and apply default storageClass if one is not present
